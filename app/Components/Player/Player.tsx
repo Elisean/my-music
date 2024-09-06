@@ -139,7 +139,7 @@ export const Player:React.FC = () => {
   useEffect(() => {
     if ('mediaSession' in navigator) {
       navigator.mediaSession.metadata = new MediaMetadata({
-        title: 'Название трека',
+        title: currentTrackName,
         artist: 'Исполнитель',
         album: 'Альбом',
         artwork: [
