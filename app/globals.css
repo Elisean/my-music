@@ -1,0 +1,44 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+*{
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+body{
+  background-color: #000000;
+  color: #FFFFFF;
+}
+input[type="search"]::-webkit-search-decoration,
+input[type="search"]::-webkit-search-cancel-button,
+input[type="search"]::-webkit-search-results-button,
+input[type="search"]::-webkit-search-results-decoration {
+	-webkit-appearance:none;
+}
+input[type="search"]:focus{
+  border: none;
+  outline: none;
+}
+
+
+.container{
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+
+@media screen and (-webkit-min-device-pixel-ratio: 0) {
+     
+  input[type="range"]::-webkit-slider-thumb {
+      width: 6px;
+      -webkit-appearance: none;
+      appearance: none;
+      height: 10px;
+      background: #FFF;
+      box-shadow: -405px 0 0 400px #FFF;
+      border-radius: 50%;
+      
+  }
+}
