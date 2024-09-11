@@ -27,8 +27,6 @@ export const Player:React.FC = () => {
     setIsPlaying(true);
   };
 
-
-
   const getTrackNameFromUrl = (url:string) => {
     if(url){
       const path = new URL(url).pathname;
@@ -81,8 +79,10 @@ export const Player:React.FC = () => {
       audioRef.current.load();
       audioRef.current.play();
     }
+    
     setIsPlaying(!isPlaying);
   };
+
 
   const handleTimeUpdate = () => {
     setCurrentTime(audioRef.current.currentTime);
@@ -121,19 +121,18 @@ export const Player:React.FC = () => {
   useEffect(() => {
     const audioElement = audioRef.current;
 
-    const handleCanPlayThrough = () => {
-      if (isPlaying) {
-        audioElement.play();
-      }
+
+    const handleEnded = () => {
+      handleNextTrack();
     };
-
-    audioElement.load();
-    audioElement.addEventListener('canplaythrough', handleCanPlayThrough);
-
+  
+    audioElement.addEventListener('ended', handleEnded);
+  
     return () => {
-      audioElement.removeEventListener('canplaythrough', handleCanPlayThrough);
+      audioElement.removeEventListener('ended', handleEnded);
     };
-  }, [currentTrackIndex, isPlaying]);
+   
+  }, [currentTrackIndex, handleNextTrack]);
 
 
   useEffect(() => {
@@ -277,3 +276,6 @@ export const Player:React.FC = () => {
     </div>
   )
 }
+
+
+

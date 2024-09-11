@@ -62,20 +62,19 @@ export const Header:React.FC = () => {
 
   return (
     <header className=' flex justify-between py-5 relative items-center'>
-        <div className='ml-11'>
+        <div>
           My music 
         </div>
 
         <div className='absolute top-6 left-64'>
-          <button>
+          <button className='ml-3'>
             <Image src="/static/arrow.svg" alt='arrow' width={13} height={22} />
           </button>
           <button className='ml-12 rotate-180'>
             <Image src="/static/arrow.svg" alt='arrow' width={13} height={22} />
           </button>
         </div>
-          <form className='min-w-70 relative'>
-        
+          <form className='min-w-70 relative left-7'>
               <Input 
                 type='search' 
                 placeholder='Artist, songs, or podcasts' 
