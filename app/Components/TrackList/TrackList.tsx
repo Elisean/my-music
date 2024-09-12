@@ -2,12 +2,14 @@ import React from 'react'
 
 interface ITrackList {
     children: React.ReactNode,
+    className: string
+    ref?: React.RefObject<HTMLUListElement>
 }
 
 
-export const TrackList:React.FC<ITrackList> = ({children}) => {
+export const TrackList:React.FC<ITrackList> = ({children, className, ref}) => {
   return (
-    <ul className='border rounded-sm border-slate-500 overflow-x-hidden overflow-y-auto whitespace-nowrap max-h-96 '>
+    <ul ref={ref} className={className}>
             {children}
     </ul>
   )

@@ -4,9 +4,14 @@ import Image from 'next/image'
 import { ref, listAll, getDownloadURL } from "firebase/storage";
 import { storage } from '@/app/configs/firebase';
 
+interface IPlayer {
+  currentTrack?: string | null;
+}
+
+export const Player:React.FC<IPlayer> = ({currentTrack}) => {
+  
 
 
-export const Player:React.FC = () => {
   const [isColor, setIsColor] = React.useState<boolean>(false);
   const [musicList, setMusicList] = React.useState<string[]>([]);
   const [currentTrackIndex, setCurrentTrackIndex] = React.useState<number>(0);
@@ -82,6 +87,15 @@ export const Player:React.FC = () => {
     
     setIsPlaying(!isPlaying);
   };
+//  логика переключения трека из вне
+  useEffect(() => {
+    if (currentTrack && audioRef.current) {
+      audioRef.current.src = currentTrack;
+      audioRef.current.load();
+      audioRef.current.play();
+      setIsPlaying(true);
+    }
+  }, [currentTrack]);
 
 
   const handleTimeUpdate = () => {
