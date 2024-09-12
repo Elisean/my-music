@@ -13,6 +13,7 @@ export const Aside:React.FC = () => {
       mr-8 
       min-h-full 
       xxs:w-0 
+      xxs:outline-none
       xxs:mr-0
       '>
         
@@ -76,7 +77,7 @@ export const Aside:React.FC = () => {
 
           </div>
 
-          <Link href='/pages/home'>Your Library</Link>
+          <Link href='/pages/home'>Library</Link>
         
         </div>
       </div>

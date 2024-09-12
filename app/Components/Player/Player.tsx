@@ -183,10 +183,13 @@ export const Player:React.FC = () => {
       <div className='flex items-center ml-4'>
         <div className='
           w-56 
-          xxs:w-24
+          xxs:w-32
           xxs:h-14'>
-
-          <h2 className='text-xs font-medium truncatel line-clamp-2'>{currentTrackName}</h2>
+            <div className='relative overflow-hidden'>
+              <h2 className='text-xs font-medium truncate line-clamp-2 whitespace-nowrap'>
+                    <span className='inline-block animate-scroll'>{currentTrackName}</span>
+              </h2>
+            </div>
           <p className='text-slate-400'>Artist</p>
         </div>
         <div className='ml-9 cursor-pointer xxs:hidden' onClick={() => setIsColor(!isColor)}>
@@ -204,13 +207,25 @@ export const Player:React.FC = () => {
               </svg>
           </button>
 
-          <button onClick={handlePreviousTrack} className='xxs:hidden'>
+          <button onClick={handlePreviousTrack} className='
+            xs:block 
+            xs:absolute
+            xs:top-5
+            xs:right-20 
+            xxs:hidden'>
             <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path fillRule="evenodd" clipRule="evenodd" d="M8 7C7.44772 7 7 7.44772 7 8V24C7 24.5523 7.44772 25 8 25H10C10.5523 25 11 24.5523 11 24V18.1512L23.5 24.8738C24.1667 25.2323 25 24.7842 25 24.0671V7.9329C25 7.21582 24.1667 6.76765 23.5 7.12619L11 13.8488V8C11 7.44772 10.5523 7 10 7H8Z" fill="white"/>
             </svg>
           </button>
 
-          <button className='xxs:absolute xxs:right-2 xxs:top-4' onClick={togglePlay}>
+          <button className='
+            xs:right-10
+            xxs:absolute 
+            xxs:right-2 
+            xxs:top-4
+            ' 
+            
+            onClick={togglePlay}>
 
             {
               isPlaying ? ( <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -223,7 +238,12 @@ export const Player:React.FC = () => {
            
           </button>
 
-          <button onClick={handleNextTrack} className='xxs:hidden'>
+          <button onClick={handleNextTrack} className='
+            xs:block 
+            xs:absolute 
+            xs:right-2
+            xs:top-5
+            xxs:hidden'>
             <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path fillRule="evenodd" clipRule="evenodd" d="M8 7C7.44772 7 7 7.44772 7 8V24C7 24.5523 7.44772 25 8 25H10C10.5523 25 11 24.5523 11 24V18.1512L23.5 24.8738C24.1667 25.2323 25 24.7842 25 24.0671V7.9329C25 7.21582 24.1667 6.76765 23.5 7.12619L11 13.8488V8C11 7.44772 10.5523 7 10 7H8Z" fill="white"/>
             </svg>
