@@ -20,11 +20,11 @@ function MainPageLayout({
     <main className={montserrat.className}>
         <div className="container flex flex-col min-h-screen justify-between px-2">
           <Header />
-          <div className="flex flex-grow">
+          <div className="flex flex-grow relative">
             <Aside />
             {children}
 
-            <div className="overflow-x-hidden flex flex-col ml-6">
+            <div className="overflow-x-hidden flex flex-col ml-6 xxs:hidden">
               <div>Story</div>
               <TrackList>
                 <li className='pl-4'>aaaaa aaaaa aaaaaaaaaaaaaaaaaaaaaaaaa</li>

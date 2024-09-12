@@ -7,7 +7,7 @@ interface ITrackList {
 
 export const TrackList:React.FC<ITrackList> = ({children}) => {
   return (
-    <ul className='border rounded-sm border-slate-500 overflow-x-hidden overflow-y-auto whitespace-nowrap max-h-96'>
+    <ul className='border rounded-sm border-slate-500 overflow-x-hidden overflow-y-auto whitespace-nowrap max-h-96 '>
             {children}
     </ul>
   )

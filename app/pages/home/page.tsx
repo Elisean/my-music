@@ -3,9 +3,14 @@ import Title from "@/app/Components/UI/Title/Title";
 
 function Home() {
     return (
-      <main  className="bg-gradient-homePage min-w-150">
-        <Title>Your Playlists</Title>
-        <div className="w-full flex justify-between mt-4 flex-wrap">
+      <main className="bg-gradient-homePage w-full xxs:px-2">
+        <Title className="xxs:mt-7">Your Playlists</Title>
+        <div className="
+          w-full 
+          flex 
+          justify-between 
+          flex-wrap
+          ">
           <PlayList>
               Anime
           </PlayList>
@@ -15,9 +20,7 @@ function Home() {
           <PlayList>
               Rap
           </PlayList>
-         
         </div>
-       
       </main>
     );
   }

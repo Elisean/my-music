@@ -150,14 +150,26 @@ export const Player:React.FC = () => {
       navigator.mediaSession.setActionHandler('pause', togglePlay);
       navigator.mediaSession.setActionHandler('nexttrack', handleNextTrack);
       navigator.mediaSession.setActionHandler('previoustrack', handlePreviousTrack);
-    }
+    };
+       // Установка обработчиков для перемотки
+      navigator.mediaSession.setActionHandler('seekbackward', (details) => {
+        const seekTime = details.seekOffset || 10; // По умолчанию перемотка на 10 секунд назад
+        audioRef.current.currentTime -= seekTime;
+        setCurrentTime(audioRef.current.currentTime);
+      });
+  
+      navigator.mediaSession.setActionHandler('seekforward', (details) => {
+        const seekTime = details.seekOffset || 10; // По умолчанию перемотка на 10 секунд вперед
+        audioRef.current.currentTime += seekTime;
+        setCurrentTime(audioRef.current.currentTime);
+      });
   }, [currentTrackIndex, isPlaying]);
 
 
 
   return (
 
-    <div className='bg-slate-800 py-2 flex justify-between'>
+    <div className='bg-slate-800 py-2 flex justify-between xxs:block xxs:relative'>
       
       <audio
         ref={audioRef}
@@ -169,32 +181,36 @@ export const Player:React.FC = () => {
       </audio>
 
       <div className='flex items-center ml-4'>
-        <div className='w-56'>
+        <div className='
+          w-56 
+          xxs:w-24
+          xxs:h-14'>
+
           <h2 className='text-xs font-medium truncatel line-clamp-2'>{currentTrackName}</h2>
           <p className='text-slate-400'>Artist</p>
         </div>
-        <div className='ml-9 cursor-pointer' onClick={() => setIsColor(!isColor)}>
+        <div className='ml-9 cursor-pointer xxs:hidden' onClick={() => setIsColor(!isColor)}>
           <svg width="18" height="18" viewBox="0 0 22 21" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M11.0009 2.03963C13.4673 -0.25648 17.2787 -0.18027 19.6548 2.28786C22.0299 4.75708 22.1118 8.68955 19.9026 11.2546L10.9988 20.5L2.09703 11.2546C-0.112132 8.68955 -0.0291836 4.75055 2.34482 2.28786C4.72303 -0.177004 8.52711 -0.259747 11.0009 2.03963Z" fill={isColor ? '#63CF6C' : 'white'}/>
           </svg>
         </div>
       </div>
 
-      <div className='flex flex-col items-center'>
-        <div className='flex items-center justify-between w-64'>
-          <button>
+      <div className='flex flex-col items-center relative xxs:static'>
+        <div className='flex items-center justify-between w-64 xxs:w-28'> { /* вот сдесь ширина плеера */ }
+          <button className='xxs:hidden'>
               <svg width="22" height="19" viewBox="0 0 22 19" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path fillRule="evenodd" clipRule="evenodd" d="M16.4708 0.31952C16.0448 0.745547 16.0448 1.43627 16.4708 1.8623L17.1566 2.54813H14.8151C13.3733 2.54813 12.0016 3.21499 11.0522 4.37757L2.94266 14.3076C2.37299 15.0052 1.55001 15.4053 0.684927 15.4053H0V17.5481H0.684927C2.12674 17.5481 3.49837 16.8813 4.44781 15.7187L12.5573 5.78865C13.127 5.0911 13.95 4.69099 14.8151 4.69099H17.4991L16.4708 5.71924C16.0448 6.14527 16.0448 6.836 16.4708 7.26202C16.8968 7.68805 17.5876 7.68805 18.0136 7.26202L21.1313 4.14432C21.3265 3.94906 21.3265 3.63248 21.1313 3.43722L18.0136 0.31952C17.5876 -0.106507 16.8968 -0.106507 16.4708 0.31952ZM1.36879 1.54813C2.76049 1.54813 4.08446 2.19407 5.0009 3.32018L7.45312 6.17275L6 7.54813L3.54806 4.687C2.9982 4.01133 2.20381 3.62377 1.36879 3.62377H0.000425339V1.54813H1.36879ZM11.3284 13.7761C12.2449 14.9022 13.5688 15.5481 14.9605 15.5481H17.6419L16.4708 16.7192C16.0448 17.1453 16.0448 17.836 16.4708 18.262C16.8968 18.688 17.5876 18.688 18.0136 18.262L21.1313 15.1443C21.3265 14.9491 21.3265 14.6325 21.1313 14.4372L18.0136 11.3195C17.5876 10.8935 16.8968 10.8935 16.4708 11.3195C16.0448 11.7455 16.0448 12.4363 16.4708 12.8623L17.081 13.4725H14.9605C14.1255 13.4725 13.3311 13.0849 12.7813 12.4093L11 10.0481L9.5 11.5481L11.3284 13.7761Z" fill="#BABABA"/>
               </svg>
           </button>
 
-          <button onClick={handlePreviousTrack} >
+          <button onClick={handlePreviousTrack} className='xxs:hidden'>
             <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path fillRule="evenodd" clipRule="evenodd" d="M8 7C7.44772 7 7 7.44772 7 8V24C7 24.5523 7.44772 25 8 25H10C10.5523 25 11 24.5523 11 24V18.1512L23.5 24.8738C24.1667 25.2323 25 24.7842 25 24.0671V7.9329C25 7.21582 24.1667 6.76765 23.5 7.12619L11 13.8488V8C11 7.44772 10.5523 7 10 7H8Z" fill="white"/>
             </svg>
           </button>
 
-          <button onClick={togglePlay}>
+          <button className='xxs:absolute xxs:right-2 xxs:top-4' onClick={togglePlay}>
 
             {
               isPlaying ? ( <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -207,34 +223,56 @@ export const Player:React.FC = () => {
            
           </button>
 
-          <button onClick={handleNextTrack}>
+          <button onClick={handleNextTrack} className='xxs:hidden'>
             <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path fillRule="evenodd" clipRule="evenodd" d="M8 7C7.44772 7 7 7.44772 7 8V24C7 24.5523 7.44772 25 8 25H10C10.5523 25 11 24.5523 11 24V18.1512L23.5 24.8738C24.1667 25.2323 25 24.7842 25 24.0671V7.9329C25 7.21582 24.1667 6.76765 23.5 7.12619L11 13.8488V8C11 7.44772 10.5523 7 10 7H8Z" fill="white"/>
             </svg>
           </button>
 
-          <button className='mt-1'>
+          <button className='mt-1 xxs:hidden'>
             <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path fillRule="evenodd" clipRule="evenodd" d="M22 8H10C8.89543 8 8 8.89543 8 10V18C8 19.1046 8.89543 20 10 20H12V22H10C7.79086 22 6 20.2091 6 18V10C6 7.79086 7.79086 6 10 6H22C24.2091 6 26 7.79086 26 10V18C26 20.2091 24.2091 22 22 22H18.843L20.0141 23.1711C20.4401 23.5971 20.4401 24.2879 20.0141 24.7139C19.588 25.1399 18.8973 25.1399 18.4713 24.7139L15.3536 21.5962C15.1583 21.4009 15.1583 21.0843 15.3536 20.8891L18.4713 17.7714C18.8973 17.3454 19.588 17.3454 20.0141 17.7714C20.4401 18.1974 20.4401 18.8881 20.0141 19.3142L19.3282 20H22C23.1046 20 24 19.1046 24 18V10C24 8.89543 23.1046 8 22 8Z" fill="#BABABA"/>
             </svg>
           </button>
 
         </div>
-          <div className='flex items-center' >
-              <div className='text-xs text-gray-400 w-5'>{formatTime(currentTime)}</div>
+        
+          <div className='
+          
+            flex 
+            items-center
+            xxs:absolute
+            xxs:w-full
+            xxs:bottom-1
+            xxs:left: 0
+          
+          '>
+              <div className='text-xs text-gray-400 w-5 xxs:hidden'>{formatTime(currentTime)}</div>
                 <input
                         type="range"
                         min="0"
                         max={duration}
                         value={currentTime}
                         onChange={handleSeek}
-                        className='w-96 h-1 mx-2 bg-gray-400 overflow-hidden appearance-none cursor-pointer'
+                        className='
+                          w-96 
+                          h-1 
+                          mx-2 
+                          bg-gray-400 
+                          overflow-hidden 
+                          appearance-none 
+                          cursor-pointer
+                      
+                          '
                       />
-              <div className='text-x text-gray-400 w-5'>{formatTime(duration)}</div>
+              <div className='text-x text-gray-400 w-5 xxs:hidden'>{formatTime(duration)}</div>
          </div>
       </div>  
 
-      <div className='flex items-center'>
+      <div className='
+        flex 
+        items-center
+        xxs:hidden'>
             <div>
               <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path opacity="0.7" fillRule="evenodd" clipRule="evenodd" d="M22 9H10C9.44772 9 9 9.44772 9 10V11C9 11.5523 9.44772 12 10 12H22C22.5523 12 23 11.5523 23 11V10C23 9.44772 22.5523 9 22 9ZM10 7C8.34315 7 7 8.34315 7 10V11C7 12.6569 8.34315 14 10 14H22C23.6569 14 25 12.6569 25 11V10C25 8.34315 23.6569 7 22 7H10ZM7 17H25V19.5H7V17ZM25 23H7V25.5H25V23Z" fill="white"/>
@@ -273,6 +311,7 @@ export const Player:React.FC = () => {
             </div>
 
       </div>
+      
     </div>
   )
 }

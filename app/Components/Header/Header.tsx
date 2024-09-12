@@ -16,7 +16,7 @@ export const Header:React.FC = () => {
     const [user, setUser] = useState<any>(null);
     const [imageUrl, setImageUrl] = useState('');
     const [isOpen, setIsOpen] = useState(false);
-    const [userSearch, setuserSearch] = useState('')
+    const [userSearch, setUserSearch] = useState('')
     const auth = getAuth(app);
     const router = useRouter();
 
@@ -61,30 +61,36 @@ export const Header:React.FC = () => {
       };
 
   return (
-    <header className=' flex justify-between py-5 relative items-center'>
-        <div>
+      <header className='flex justify-between py-5 items-center w-full'>
+
+        <div className=' xxs:text-xl font-bold'>
           My music 
         </div>
 
-        <div className='absolute top-6 left-64'>
-          <button className='ml-3'>
-            <Image src="/static/arrow.svg" alt='arrow' width={13} height={22} />
-          </button>
-          <button className='ml-12 rotate-180'>
-            <Image src="/static/arrow.svg" alt='arrow' width={13} height={22} />
-          </button>
+        <div className='flex justify-between'>
+
+            <div className='flex sm:block xxs:hidden'>
+                <button className=''>
+                  <Image src="/static/arrow.svg" alt='arrow' width={13} height={22} />
+                </button>
+                <button className='ml-5 rotate-180'>
+                  <Image src="/static/arrow.svg" alt='arrow' width={13} height={22} />
+                </button>
+            </div>
+    
+            <form className='relative sm:block xxs:hidden'>
+                <Input 
+                  type='search' 
+                  placeholder='Artist, songs, or podcasts' 
+                  className='rounded-full pl-8 pr-2 py-1 text-black font-medium' 
+                  value={userSearch} 
+                  onChange={(event:React.ChangeEvent<HTMLInputElement>) => setUserSearch(event.target.value)}/>
+                <Image src="/static/search.svg" alt="User Icon" width={15} height={16} className='absolute top-2 left-3' />
+            </form>
         </div>
-          <form className='min-w-70 relative left-7'>
-              <Input 
-                type='search' 
-                placeholder='Artist, songs, or podcasts' 
-                className='rounded-full pl-8 pr-2 py-1 text-black font-medium' 
-                value={userSearch} 
-                onChange={(event:React.ChangeEvent<HTMLInputElement>) => setuserSearch(event.target.value)}/>
-               <Image src="/static/search.svg" alt="User Icon" width={15} height={16} className='absolute top-2 left-3' />
-          </form>
-          <div>
-            <div className='flex items-center absolute top-5 right-11 cursor-pointer' onClick={() => setIsOpen(!isOpen)} >
+       
+          <div className='sm:block xxs:hidden'>
+            <div className='flex items-center cursor-pointer' onClick={() => setIsOpen(!isOpen)} >
                   {
                     imageUrl ? <Image src={imageUrl} alt='avatar' width={34} height={34} className='rounded-3xl mr-2' /> : <Image src="/static/user.svg" alt="User Icon" width={30} height={30} className='mr-1 ' />
                   } 
@@ -100,7 +106,51 @@ export const Header:React.FC = () => {
                   <Button id='sign-out' type="button" onClick={handleSignOut}> Выйти </Button>
               </div>
           </div>
-    </header>
+
+        <div>
+          <Image src="/static/settings.svg" alt="settings" width={32} height={32} className='' />
+        </div>
+
+        </header> 
   )
 }
 
+// absolute top-1 left-0
+
+// ml-8
+
+// min-w-200 relative left-20
+
+
+
+// absolute -top-3 left-12
+
+
+
+
+
+{/* <div className='relative'>
+<div className='flex w-20 mr-8 '>
+      <button className=''>
+        <Image src="/static/arrow.svg" alt='arrow' width={13} height={22} />
+      </button>
+      <button className='ml-5 rotate-180'>
+        <Image src="/static/arrow.svg" alt='arrow' width={13} height={22} />
+      </button>
+  </div>
+</div>
+
+
+<div className='lg:min-w-70 md:w-1/2 lg:ml-0 md:ml-10 xs:w-32'>
+
+  <form className='relative lg:ml-0 lg:mr-0  md:ml-10 md:-mr-2'>
+      <Input 
+        type='search' 
+        placeholder='Artist, songs, or podcasts' 
+        className='rounded-full pl-8 pr-2 py-1 text-black font-medium' 
+        value={userSearch} 
+        onChange={(event:React.ChangeEvent<HTMLInputElement>) => setUserSearch(event.target.value)}/>
+      <Image src="/static/search.svg" alt="User Icon" width={15} height={16} className='absolute top-2 left-3' />
+  </form>
+
+</div> */}
