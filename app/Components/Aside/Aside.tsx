@@ -21,8 +21,6 @@ export const Aside:React.FC = () => {
         flex 
         flex-col 
         justify-around  
-        min-h-20
-        xxs:min-h-16 
         xxs:absolute
         xxs:flex-row
         xxs:bottom-0
@@ -31,7 +29,6 @@ export const Aside:React.FC = () => {
         xxs:py-4
         xxs:bg-slate-700
         xxs:text-slate-400
-
         '>
           
         <div className='
@@ -83,12 +80,12 @@ export const Aside:React.FC = () => {
       </div>
 
 
-        <div className='flex flex-col items-start my-7'>
+        <div className='flex flex-col items-start my-7 xxs:hidden'>
             <button className='mb-2'>Create Playlist</button>
             <Link href='/pages/likedSongs'>Liked songs</Link>  
         </div>
 
-        <Title>Playlist</Title>
+        {/* <Title>Playlist</Title>
         <TrackList>
               <li className='pl-4'>aaaaa aaaaa aaaaaaaaaaaaaaaaaaaaaaaaa</li>
               <li>ssssss</li>
@@ -118,7 +115,7 @@ export const Aside:React.FC = () => {
               <li>uuuuuu</li>
               <li>uuuuuu</li>
         </TrackList>
-   
+    */}
 
 
     </aside>
