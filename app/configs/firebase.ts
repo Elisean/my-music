@@ -4,6 +4,7 @@ import { getFirestore } from 'firebase/firestore';
 import { getStorage } from 'firebase/storage';
 import { getAuth } from 'firebase/auth';
 
+
 const firebaseConfig = {
   apiKey: "AIzaSyAIN8du-i9XKTgWZN_ZepcNGrhnyxFIsEI",
   authDomain: "my-music-d049f.firebaseapp.com",

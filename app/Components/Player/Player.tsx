@@ -1,39 +1,48 @@
 'use client'
-import React, { useEffect, useRef } from 'react'
-import Image from 'next/image'
-import { ref, listAll, getDownloadURL } from "firebase/storage";
-import { storage } from '@/app/configs/firebase';
+import React, { useEffect, useRef } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  fetchMusicList,
+  setCurrentTrackIndex,
+  setIsPlaying,
+  setCurrentTime,
+  setDuration,
+  setVolume,
+} from '@/app/Store/Slices/musicListSlice';
+import { RootState, AppDispatch } from '@/app/Store/store';
 
 interface IPlayer {
   currentTrack?: string | null;
 }
 
-export const Player:React.FC<IPlayer> = ({currentTrack}) => {
-  
-
+export const Player:React.FC<IPlayer> = () => {
 
   const [isColor, setIsColor] = React.useState<boolean>(false);
-  const [musicList, setMusicList] = React.useState<string[]>([]);
-  const [currentTrackIndex, setCurrentTrackIndex] = React.useState<number>(0);
-  const [isPlaying, setIsPlaying] = React.useState<boolean>(false);
-  const [currentTime, setCurrentTime] = React.useState<number>(0);
-  const [duration, setDuration] = React.useState<number>(0);
-  const [volume, setVolume] = React.useState<number>(1);
-  const audioRef = useRef<any>(null);
+  const dispatch = useDispatch<AppDispatch>();
+  const musicList = useSelector((state: RootState) => state.music.musicList);
+  const status = useSelector((state: RootState) => state.music.status);
+  const currentTrackIndex = useSelector((state: RootState) => state.music.currentTrackIndex);
+  const isPlaying = useSelector((state: RootState) => state.music.isPlaying);
+  const currentTime = useSelector((state: RootState) => state.music.currentTime);
+  const duration = useSelector((state: RootState) => state.music.duration);
+  const volume = useSelector((state: RootState) => state.music.volume);
 
+  const audioRef = useRef<any>(null);
+  const [userInteracted, setUserInteracted] = React.useState(false);
+  const [playPromise, setPlayPromise] = React.useState<Promise<void> | null>(null);
 
   const handleNextTrack = () => {
-    setCurrentTrackIndex((prevIndex) => (prevIndex + 1) % musicList.length);
-    setIsPlaying(true);
+    dispatch(setCurrentTrackIndex((currentTrackIndex + 1) % musicList.length));
+    dispatch(setIsPlaying(true));
   };
 
   const handlePreviousTrack = () => {
-    setCurrentTrackIndex((prevIndex) => (prevIndex - 1 + musicList.length) % musicList.length);
-    setIsPlaying(true);
+    dispatch(setCurrentTrackIndex((currentTrackIndex - 1 + musicList.length) % musicList.length));
+    dispatch(setIsPlaying(true));
   };
 
-  const getTrackNameFromUrl = (url:string) => {
-    if(url){
+  const getTrackNameFromUrl = (url: string) => {
+    if (url) {
       const path = new URL(url).pathname;
       const parts = path.split('/');
       const fileName = decodeURIComponent(parts[parts.length - 1]);
@@ -44,110 +53,112 @@ export const Player:React.FC<IPlayer> = ({currentTrack}) => {
   const currentTrackName = getTrackNameFromUrl(musicList[currentTrackIndex]);
 
   useEffect(() => {
-    
-    const listRef = ref(storage, 'Music');
-  
-    listAll(listRef)
-      .then((res) => {
-        const promises = res.items.map((itemRef) => {
-          return getDownloadURL(itemRef);
-        });
+    if (status === 'idle') {
+      dispatch(fetchMusicList());
+    }
+  }, [status, dispatch]);
 
-        Promise.all(promises).then((urls) => {
-          setMusicList(urls);
+  useEffect(() => {
+    const handleInteraction = () => {
+      setUserInteracted(true);
+      document.removeEventListener('mousedown', handleInteraction);
+      document.removeEventListener('keydown', handleInteraction);
+    };
 
-        });
-        
-      })
-      .catch((error) => {
-        console.error('Error listing files:', error);
-      });
+    document.addEventListener('mousedown', handleInteraction);
+    document.addEventListener('keydown', handleInteraction);
+
+    return () => {
+      document.removeEventListener('mousedown', handleInteraction);
+      document.removeEventListener('keydown', handleInteraction);
+    };
   }, []);
-
 
   useEffect(() => {
     if (audioRef.current) {
       audioRef.current.currentTime = currentTime;
-      if (isPlaying) {
-        audioRef.current.play();
+      if (isPlaying && userInteracted) {
+        if (playPromise) {
+          playPromise.catch(() => {}); // Отменяем предыдущий запрос на воспроизведение
+        }
+        setPlayPromise(audioRef.current.play().catch((error: any) => {
+          console.error('Play error:', error);
+        }));
       } else {
         audioRef.current.pause();
       }
     }
-  }, [isPlaying, currentTrackIndex]);
+  }, [isPlaying, currentTrackIndex, userInteracted]);
 
   const togglePlay = () => {
-
     if (isPlaying) {
       audioRef.current.pause();
     } else {
       audioRef.current.load();
-      audioRef.current.play();
+      if (playPromise) {
+        playPromise.catch(() => {}); // Отменяем предыдущий запрос на воспроизведение
+      }
+      setPlayPromise(audioRef.current.play().catch((error: any) => {
+        console.error('Play error:', error);
+      }));
     }
-    
-    setIsPlaying(!isPlaying);
+    dispatch(setIsPlaying(!isPlaying));
+    setUserInteracted(true); // Устанавливаем флаг взаимодействия после первого нажатия на кнопку
   };
-//  логика переключения трека из вне
-  useEffect(() => {
-    if (currentTrack && audioRef.current) {
-      audioRef.current.src = currentTrack;
-      audioRef.current.load();
-      audioRef.current.play();
-      setIsPlaying(true);
-    }
-  }, [currentTrack]);
 
+ 
 
   const handleTimeUpdate = () => {
-    setCurrentTime(audioRef.current.currentTime);
+    dispatch(setCurrentTime(audioRef.current.currentTime));
   };
 
   const handleLoadedMetadata = () => {
-    setDuration(audioRef.current.duration);
+    dispatch(setDuration(audioRef.current.duration));
   };
 
-  const handleSeek = (e:React.ChangeEvent<HTMLInputElement>) => {
+  const handleSeek = (e: React.ChangeEvent<HTMLInputElement>) => {
     const time = parseFloat(e.target.value);
     audioRef.current.currentTime = time;
-    setCurrentTime(time);
+    dispatch(setCurrentTime(time));
   };
 
   useEffect(() => {
-    audioRef.current.load();
-    audioRef.current.play();
- 
-  }, [currentTrackIndex]);
+    if (userInteracted) {
+      audioRef.current.load();
+      if (playPromise) {
+        playPromise.catch(() => {}); // Отменяем предыдущий запрос на воспроизведение
+      }
+      setPlayPromise(audioRef.current.play().catch((error: any) => {
+        console.error('Play error:', error);
+      }));
+    }
+  }, [currentTrackIndex, userInteracted]);
 
-  const formatTime = (time:number) => {
+  const formatTime = (time: number) => {
     const minutes = Math.floor(time / 60);
     const seconds = Math.floor(time % 60);
     return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
   };
 
-  const handleVolumeChange = (e:React.ChangeEvent<HTMLInputElement>) => {
+  const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newVolume = parseFloat(e.target.value);
     audioRef.current.volume = newVolume;
-    setVolume(newVolume);
+    dispatch(setVolume(newVolume));
   };
-
-
 
   useEffect(() => {
     const audioElement = audioRef.current;
 
-
     const handleEnded = () => {
       handleNextTrack();
     };
-  
+
     audioElement.addEventListener('ended', handleEnded);
-  
+
     return () => {
       audioElement.removeEventListener('ended', handleEnded);
     };
-   
   }, [currentTrackIndex, handleNextTrack]);
-
 
   useEffect(() => {
     if ('mediaSession' in navigator) {
@@ -164,22 +175,21 @@ export const Player:React.FC<IPlayer> = ({currentTrack}) => {
       navigator.mediaSession.setActionHandler('pause', togglePlay);
       navigator.mediaSession.setActionHandler('nexttrack', handleNextTrack);
       navigator.mediaSession.setActionHandler('previoustrack', handlePreviousTrack);
-    };
-       // Установка обработчиков для перемотки
+
+      // Установка обработчиков для перемотки
       navigator.mediaSession.setActionHandler('seekbackward', (details) => {
         const seekTime = details.seekOffset || 10; // По умолчанию перемотка на 10 секунд назад
         audioRef.current.currentTime -= seekTime;
-        setCurrentTime(audioRef.current.currentTime);
+        dispatch(setCurrentTime(audioRef.current.currentTime));
       });
-  
+
       navigator.mediaSession.setActionHandler('seekforward', (details) => {
         const seekTime = details.seekOffset || 10; // По умолчанию перемотка на 10 секунд вперед
         audioRef.current.currentTime += seekTime;
-        setCurrentTime(audioRef.current.currentTime);
+        dispatch(setCurrentTime(audioRef.current.currentTime));
       });
+    }
   }, [currentTrackIndex, isPlaying]);
-
-
 
   return (
 

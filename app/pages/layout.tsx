@@ -4,7 +4,7 @@ import authProvider from "../providers/authProvider";
 import { Header } from "../Components/Header/Header";
 import { Aside } from "../Components/Aside/Aside";
 import { Player } from "../Components/Player/Player";
-import { TrackList } from "../Components/TrackList/TrackList";
+
 import React from "react";
 
 const montserrat = Montserrat({
@@ -16,17 +16,13 @@ function MainPageLayout({
 }: {
   children: React.ReactNode;
 }) {
-  
-   const [currentTrack, setCurrentTrack] = React.useState<string | null>(null)
-
- 
 
   return (
     <main className={montserrat.className}>
         <div className="container flex flex-col min-h-screen justify-between px-2">
           <Header />
           <div className="flex flex-grow relative">
-            <Aside setCurrentTrack={setCurrentTrack} />
+            <Aside />
             {children}
 
             <div className="overflow-x-hidden flex flex-col ml-6 xxs:hidden">
@@ -35,7 +31,7 @@ function MainPageLayout({
           
           </div>
           <div>
-            <Player currentTrack={currentTrack} />
+            <Player  />
           </div>
     </div>
     </main>

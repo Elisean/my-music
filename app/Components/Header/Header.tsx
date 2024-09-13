@@ -4,7 +4,6 @@ import { Button } from '../UI/Button/Button'
 import { useRouter } from 'next/navigation';
 import { getAuth, onAuthStateChanged, signOut } from 'firebase/auth';
 import { app } from "@/app/configs/firebase";
-import Link from "next/link";
 import { getUserImageURL } from '@/app/configs/uploadImageFireBase';
 import { checkUserAuthentication } from '@/app/providers/authProvider';
 import Image from 'next/image';
@@ -20,9 +19,6 @@ export const Header:React.FC = () => {
     const auth = getAuth(app);
     const router = useRouter();
 
-
-
-    
     useEffect(() => {
       const unsubscribeAuth = onAuthStateChanged(auth, (user) => {
         setUser(
@@ -115,42 +111,3 @@ export const Header:React.FC = () => {
   )
 }
 
-// absolute top-1 left-0
-
-// ml-8
-
-// min-w-200 relative left-20
-
-
-
-// absolute -top-3 left-12
-
-
-
-
-
-{/* <div className='relative'>
-<div className='flex w-20 mr-8 '>
-      <button className=''>
-        <Image src="/static/arrow.svg" alt='arrow' width={13} height={22} />
-      </button>
-      <button className='ml-5 rotate-180'>
-        <Image src="/static/arrow.svg" alt='arrow' width={13} height={22} />
-      </button>
-  </div>
-</div>
-
-
-<div className='lg:min-w-70 md:w-1/2 lg:ml-0 md:ml-10 xs:w-32'>
-
-  <form className='relative lg:ml-0 lg:mr-0  md:ml-10 md:-mr-2'>
-      <Input 
-        type='search' 
-        placeholder='Artist, songs, or podcasts' 
-        className='rounded-full pl-8 pr-2 py-1 text-black font-medium' 
-        value={userSearch} 
-        onChange={(event:React.ChangeEvent<HTMLInputElement>) => setUserSearch(event.target.value)}/>
-      <Image src="/static/search.svg" alt="User Icon" width={15} height={16} className='absolute top-2 left-3' />
-  </form>
-
-</div> */}

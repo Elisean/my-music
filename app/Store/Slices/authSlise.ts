@@ -1,11 +1,9 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 
-
 const initialState = {
     ISAUTH: false
 };
-
 
 
 const authSlice = createSlice({
@@ -19,7 +17,7 @@ const authSlice = createSlice({
 });
 
 
-  export const { setIsAuth } = authSlice.actions;
+export const { setIsAuth } = authSlice.actions;
 
 // Экспорт reducer
 export default authSlice.reducer;

@@ -1,31 +1,28 @@
 'use client'
 
 import Link from 'next/link'
-import React, { useEffect, useState, useRef } from 'react'
+import React, { useEffect, useRef } from 'react';
 import Title from '../UI/Title/Title'
 import { TrackList } from '../TrackList/TrackList'
-import Image from 'next/image'
 import { Input } from '../UI/Input/Input'
-import { ref, listAll, getDownloadURL } from "firebase/storage";
-import { storage } from '@/app/configs/firebase';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchMusicList, setCurrentTrackIndex, setIsPlaying } from '@/app/Store/Slices/musicListSlice';
+import { RootState, AppDispatch } from '@/app/Store/store';
 
-interface IAside {
-  setCurrentTrack: (url: string) => void;
-}
-
-export const Aside:React.FC<IAside> = ({ setCurrentTrack }) => {
+export const Aside:React.FC = () => {
 
   const [isOpenSearch, setIsOpenSearch] = React.useState<boolean>(false);
 
-  const [musicList, setMusicList] = React.useState<string[]>([]);
+  const dispatch = useDispatch<AppDispatch>();
+  const musicList = useSelector((state: RootState) => state.music.musicList);
+  const status = useSelector((state: RootState) => state.music.status);
+  const currentTrackIndex = useSelector((state: RootState) => state.music.currentTrackIndex);
+  const activeTrackIndex = useSelector((state: RootState) => state.music.activeTrackIndex);
 
   const trackListRef = useRef<any>(null);
 
-  
-
-
-  const getTrackNameFromUrl = (url:string) => {
-    if(url){
+  const getTrackNameFromUrl = (url: string) => {
+    if (url) {
       const path = new URL(url).pathname;
       const parts = path.split('/');
       const fileName = decodeURIComponent(parts[parts.length - 1]);
@@ -33,9 +30,8 @@ export const Aside:React.FC<IAside> = ({ setCurrentTrack }) => {
     }
   };
 
-
   useEffect(() => {
-    const handleClickOutside = (event:any) => {
+    const handleClickOutside = (event: any) => {
       if (trackListRef.current && !trackListRef.current.contains(event.target)) {
         setIsOpenSearch(false);
       }
@@ -47,31 +43,17 @@ export const Aside:React.FC<IAside> = ({ setCurrentTrack }) => {
     };
   }, [trackListRef]);
 
-
-
-
   useEffect(() => {
-    
-    const listRef = ref(storage, 'Music');
-  
-    listAll(listRef)
-      .then((res) => {
-        const promises = res.items.map((itemRef) => {
-          return getDownloadURL(itemRef);
-        });
+ 
+    if (status === 'idle') {
+      dispatch(fetchMusicList());
+    }
+  }, [status, dispatch]);
 
-        Promise.all(promises).then((urls) => {
-          setMusicList(urls);
-
-        });
-        
-      })
-      .catch((error) => {
-        console.error('Error listing files:', error);
-      });
-  }, []);
-
-
+  const handleTrackClick = (index: number) => {
+    dispatch(setCurrentTrackIndex(index));
+    dispatch(setIsPlaying(true)); // Устанавливаем состояние воспроизведения в true при выборе трека
+  };
   return (
     <aside className='
       w-1/5 
@@ -110,17 +92,18 @@ export const Aside:React.FC<IAside> = ({ setCurrentTrack }) => {
         </div>
 
 
-        <div className='
+        <div  className='
           xxs:flex
           xxs:flex-col
           xxs:items-center
-          '>
+          ' 
+          onClick={() => setIsOpenSearch(!isOpenSearch)}>
           <div>
             <svg width="16" height="16" viewBox="0 0 28 29" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M21.7747 20.3561L27.5924 26.4934C28.1511 27.0828 28.1332 28.0268 27.5524 28.5933C26.9808 29.1511 26.078 29.1329 25.5282 28.5526L19.7061 22.4083C17.7272 23.93 15.4956 24.7673 13.0114 24.9203C11.3514 25.0226 9.74381 24.792 8.18858 24.2288C6.63335 23.6655 5.2766 22.8625 4.11833 21.8199C2.96006 20.7772 2.01249 19.5057 1.27561 18.0055C0.538736 16.5053 0.120961 14.9125 0.0222852 13.2271C-0.0763905 11.5418 0.152625 9.90916 0.709331 8.32924C1.26604 6.74932 2.05852 5.37069 3.08678 4.19334C4.11504 3.01599 5.36839 2.05225 6.84685 1.30212C8.3253 0.551984 9.89446 0.125799 11.5543 0.02356C13.2142 -0.0786793 14.8218 0.151834 16.3771 0.715101C17.9324 1.27837 19.2892 2.08134 20.4474 3.12402C21.6055 4.16669 22.5531 5.43815 23.2901 6.93838C24.027 8.43862 24.4448 10.0314 24.5434 11.7168C24.606 12.7861 24.5356 13.8403 24.3321 14.8793C24.1287 15.9184 23.8096 16.8946 23.3747 17.8079C22.9399 18.7212 22.4066 19.5706 21.7747 20.3561ZM12.84 21.9912C14.1107 21.9129 15.3094 21.5854 16.436 21.0085C17.5626 20.4317 18.519 19.6933 19.305 18.7934C20.091 17.8934 20.6986 16.8412 21.1279 15.6365C21.5572 14.4319 21.7341 13.1845 21.6586 11.8944C21.5831 10.6042 21.262 9.38751 20.6953 8.24424C20.1286 7.10096 19.4026 6.13081 18.5173 5.33378C17.632 4.53674 16.5964 3.92105 15.4106 3.48669C14.2247 3.05232 12.9965 2.87428 11.7258 2.95255C10.4551 3.03081 9.25646 3.35835 8.12981 3.93514C7.00317 4.51194 6.04682 5.25035 5.26078 6.15038C4.47473 7.0504 3.86709 8.10268 3.43783 9.30721C3.00858 10.5117 2.83171 11.7591 2.90721 13.0494C2.98272 14.3396 3.3038 15.5563 3.87045 16.6995C4.4371 17.8427 5.16312 18.8128 6.04853 19.6099C6.93394 20.407 7.96951 21.0227 9.15524 21.457C10.341 21.8913 11.5692 22.0694 12.84 21.9912Z" fill="currentColor"/>
             </svg>
           </div>
-          <button onClick={() => setIsOpenSearch(!isOpenSearch)}> Search </button>
+          <button > Search </button>
          
         </div>
        
@@ -137,13 +120,22 @@ export const Aside:React.FC<IAside> = ({ setCurrentTrack }) => {
                 ) : (
                   <TrackList className='w-72 border rounded-sm border-slate-500 overflow-x-hidden overflow-y-auto whitespace-nowrap max-h-96 bg-black'>
                       <div ref={trackListRef}>
-                          {
-                            musicList.map((url, index) => (
-                              <li className='w-10 py-2 px-2 text-white' key={index} onClick={() =>  setCurrentTrack(url)}>
-                                {getTrackNameFromUrl(url)}
-                              </li>
-                            ))
-                          }
+                      {musicList.map((url, index) => (
+                          <div
+                            key={index}
+                            onClick={() => handleTrackClick(index)}
+                            style={{
+                              backgroundColor: index === activeTrackIndex ? 'lightblue' : 'transparent',
+                              color: index === activeTrackIndex ? 'black' : 'white',
+                              fontWeight: index === activeTrackIndex ? 'bold' : '',
+                              cursor: 'pointer',
+                              padding: '8px',
+                              borderRadius: '4px',
+                            }}
+                          >
+                            {getTrackNameFromUrl(url)}
+                          </div>
+                        ))}
                       </div>
                   </TrackList>
                 )}
@@ -161,7 +153,7 @@ export const Aside:React.FC<IAside> = ({ setCurrentTrack }) => {
             <svg width="16" height="16" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
             <rect x="3" y="3" width="3" height="26" rx="1.5" fill="currentColor"/>
             <rect x="11" y="3" width="3" height="26" rx="1.5" fill="currentColor"/>
-            <path fill-rule="evenodd" clip-rule="evenodd" d="M21.5 6.67524V26.5191H26.5V9.76681L21.5 6.67524ZM20.5288 3.1517C19.8627 2.73984 19 3.21512 19 3.99394V28.0076C19 28.5557 19.4477 29 20 29H28C28.5523 29 29 28.5557 29 28.0076V8.94045C29 8.59781 28.8219 8.2794 28.5288 8.09821L20.5288 3.1517Z" fill="currentColor"/>
+            <path fillRule="evenodd" clipRule="evenodd" d="M21.5 6.67524V26.5191H26.5V9.76681L21.5 6.67524ZM20.5288 3.1517C19.8627 2.73984 19 3.21512 19 3.99394V28.0076C19 28.5557 19.4477 29 20 29H28C28.5523 29 29 28.5557 29 28.0076V8.94045C29 8.59781 28.8219 8.2794 28.5288 8.09821L20.5288 3.1517Z" fill="currentColor"/>
             </svg>
 
           </div>

@@ -1,9 +1,13 @@
 import { configureStore } from "@reduxjs/toolkit";
 import authSlice from "../Store/Slices/authSlise";
+import musicReducer from '../Store/Slices/musicListSlice';
+
+
 
 export const store = configureStore({
     reducer: {
-        auth: authSlice
+        auth: authSlice,
+        music: musicReducer
     }, 
 })
 
@@ -11,3 +15,4 @@ export const store = configureStore({
 export type RootState = ReturnType<typeof store.getState>
 
 export type AppDispatch = typeof store.dispatch
+

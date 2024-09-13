@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-
+import { ThunkAction, Action } from '@reduxjs/toolkit';
 export interface ComponentTypes {
     children: ReactNode | string
 }
@@ -17,6 +17,17 @@ export interface IInput {
     className?:string
 }
 
+export interface MusicState {
+    musicList: string[];
+    status: 'idle' | 'loading' | 'succeeded' | 'failed';
+    error: string | null;
+    currentTrackIndex: number;
+    isPlaying: boolean;
+    currentTime: number;
+    duration: number;
+    volume: number;
+    activeTrackIndex:number;
+}
 
 export interface IUserData {
     userEmail:string,
@@ -28,6 +39,14 @@ export interface IUserData {
 export interface RootState {
     auth: {
       ISAUTH: boolean;
- 
-    };   
+    };
+    music: MusicState   
 }
+
+
+export type AppThunk<ReturnType = void> = ThunkAction<
+  ReturnType,
+  RootState,
+  unknown,
+  Action<string>
+>;
