@@ -175,19 +175,6 @@ export const Player:React.FC<IPlayer> = () => {
       navigator.mediaSession.setActionHandler('pause', togglePlay);
       navigator.mediaSession.setActionHandler('nexttrack', handleNextTrack);
       navigator.mediaSession.setActionHandler('previoustrack', handlePreviousTrack);
-
-      // Установка обработчиков для перемотки
-      navigator.mediaSession.setActionHandler('seekbackward', (details) => {
-        const seekTime = details.seekOffset || 10; // По умолчанию перемотка на 10 секунд назад
-        audioRef.current.currentTime -= seekTime;
-        dispatch(setCurrentTime(audioRef.current.currentTime));
-      });
-
-      navigator.mediaSession.setActionHandler('seekforward', (details) => {
-        const seekTime = details.seekOffset || 10; // По умолчанию перемотка на 10 секунд вперед
-        audioRef.current.currentTime += seekTime;
-        dispatch(setCurrentTime(audioRef.current.currentTime));
-      });
     }
   }, [currentTrackIndex, isPlaying]);
 
