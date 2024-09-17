@@ -18,6 +18,7 @@ export const Header:React.FC = () => {
     const [userSearch, setUserSearch] = useState('')
     const auth = getAuth(app);
     const router = useRouter();
+  
 
     useEffect(() => {
       const unsubscribeAuth = onAuthStateChanged(auth, (user) => {
@@ -85,26 +86,25 @@ export const Header:React.FC = () => {
             </form>
         </div>
        
-          <div className='sm:block xxs:hidden'>
-            <div className='flex items-center cursor-pointer' onClick={() => setIsOpen(!isOpen)} >
-                  {
-                    imageUrl ? <Image src={imageUrl} alt='avatar' width={34} height={34} className='rounded-3xl mr-2' /> : <Image src="/static/user.svg" alt="User Icon" width={30} height={30} className='mr-1 ' />
-                  } 
-                  
-                  {user ? <p className=''>{user.displayName}</p> : <p className=''>Loading...</p>}
+          <div className=''>
+                      <div className='flex items-center cursor-pointer sm:flex xxs:hidden' onClick={() => setIsOpen(!isOpen)} >
+                            {
+                              imageUrl ? <Image src={imageUrl} alt='avatar' width={34} height={34} className='rounded-3xl mr-2' /> : <Image src="/static/user.svg" alt="User Icon" width={30} height={30} className='mr-1 ' />
+                            } 
+                            
+                            {user ? <p className=''>{user.displayName}</p> : <p className=''>Loading...</p>}
+                              
+                              <Image src="/static/shevron.svg" alt="shevron" width={14} height={7} className='ml-1' />
+                      </div>
                     
-                    <Image src="/static/shevron.svg" alt="shevron" width={14} height={7} className='ml-1' />
-                  </div>
-                  
-                  <div className={`flex justify-end items-end flex-col absolute h-auth rounded-xl bg-slate-800 py-2 px-6 top-14 right-11 transition-all duration-300 ease-in-out ${isOpen ? 'opacity-100 translate-y-2' : 'opacity-0 translate-y-0'}`}>
-                          
-                  <div className=''>Личный кабинет</div>
-                  <Button id='sign-out' type="button" onClick={handleSignOut}> Выйти </Button>
-              </div>
+                    <div className={`flex justify-end items-end flex-col absolute h-auth rounded-xl bg-slate-800 py-2 px-6 top-14 right-11 transition-all duration-300 ease-in-out xxs:right-3  ${isOpen ? 'opacity-100 translate-y-2' : 'opacity-0 translate-y-0'} `}> 
+                      <div className=''>Личный кабинет</div>
+                      <Button id='sign-out' type="button" onClick={handleSignOut}> Выйти </Button>
+                    </div>
           </div>
 
         <div>
-          <Image src="/static/settings.svg" alt="settings" width={32} height={32} className='' />
+          <Image src="/static/settings.svg" alt="settings" width={32} height={32} className='' onClick={() => setIsOpen(!isOpen)}/>
         </div>
 
         </header> 

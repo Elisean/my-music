@@ -3,7 +3,7 @@ import Title from "@/app/Components/UI/Title/Title";
 
 function Home() {
     return (
-      <main className="bg-gradient-homePage w-full xxs:px-2">
+      <main className="bg-gradient-homePage w-full xxs:px-2 relative -z-50">
         <Title className="xxs:mt-7">Your Playlists</Title>
         <div className="
           w-full 
