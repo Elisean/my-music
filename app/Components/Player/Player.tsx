@@ -8,6 +8,7 @@ import {
   setCurrentTime,
   setDuration,
   setVolume,
+  setClickIsMusic,
 } from '@/app/Store/Slices/musicListSlice';
 import { RootState, AppDispatch } from '@/app/Store/store';
 
@@ -26,7 +27,8 @@ export const Player:React.FC<IPlayer> = () => {
   const currentTime = useSelector((state: RootState) => state.music.currentTime);
   const duration = useSelector((state: RootState) => state.music.duration);
   const volume = useSelector((state: RootState) => state.music.volume);
-
+  const clickedMusic = useSelector((state: RootState) => state.music.clickIsMusic)
+  
   const audioRef = useRef<any>(null);
   const [userInteracted, setUserInteracted] = React.useState(false);
   const [playPromise, setPlayPromise] = React.useState<Promise<void> | null>(null);
@@ -51,7 +53,7 @@ export const Player:React.FC<IPlayer> = () => {
   };
 
   const currentTrackName = getTrackNameFromUrl(musicList[currentTrackIndex]);
-
+  
   useEffect(() => {
     if (status === 'idle') {
       dispatch(fetchMusicList());
@@ -59,10 +61,20 @@ export const Player:React.FC<IPlayer> = () => {
   }, [status, dispatch]);
 
   useEffect(() => {
+    
     const handleInteraction = () => {
+    if(clickedMusic){
+     
       setUserInteracted(true);
+      // setUserInteracted(true); { /*запускает музыку если пользователь тыкнулся в любое место*/ }
+     
       document.removeEventListener('mousedown', handleInteraction);
       document.removeEventListener('keydown', handleInteraction);
+    }
+
+    
+
+     
     };
 
     document.addEventListener('mousedown', handleInteraction);
@@ -72,7 +84,7 @@ export const Player:React.FC<IPlayer> = () => {
       document.removeEventListener('mousedown', handleInteraction);
       document.removeEventListener('keydown', handleInteraction);
     };
-  }, []);
+  }, [clickedMusic]);
 
   useEffect(() => {
     if (audioRef.current) {
@@ -160,6 +172,8 @@ export const Player:React.FC<IPlayer> = () => {
     };
   }, [currentTrackIndex, handleNextTrack]);
 
+  
+
   useEffect(() => {
     if ('mediaSession' in navigator) {
       navigator.mediaSession.metadata = new MediaMetadata({
@@ -180,7 +194,7 @@ export const Player:React.FC<IPlayer> = () => {
 
   return (
 
-    <div className='bg-slate-800 py-2 flex justify-between xxs:block xxs:relative'>
+    <div className='bg-slate-800 py-2 flex justify-between xxs:block xxs:absolute w-full bottom-12 left-0 z-20' onClick={() => console.log(1)} >
       
       <audio
         ref={audioRef}
@@ -210,7 +224,7 @@ export const Player:React.FC<IPlayer> = () => {
         </div>
       </div>
 
-      <div className='flex flex-col items-center relative xxs:static'>
+      <div className='flex flex-col items-center relative z-30'>
         <div className='flex items-center justify-between w-64 xxs:w-28'> { /* вот сдесь ширина плеера */ }
           <button className='xxs:hidden'>
               <svg width="22" height="19" viewBox="0 0 22 19" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -221,7 +235,7 @@ export const Player:React.FC<IPlayer> = () => {
           <button onClick={handlePreviousTrack} className='
             xs:block 
             xs:absolute
-            xs:top-5
+            xs:-top-11
             xs:right-20 
             xxs:hidden'>
             <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -230,10 +244,10 @@ export const Player:React.FC<IPlayer> = () => {
           </button>
 
           <button className='
-            xs:right-10
             xxs:absolute 
             xxs:right-2 
-            xxs:top-4
+            xxs:-top-12
+            xs:right-10
             ' 
             
             onClick={togglePlay}>
@@ -253,7 +267,7 @@ export const Player:React.FC<IPlayer> = () => {
             xs:block 
             xs:absolute 
             xs:right-2
-            xs:top-5
+            xs:-top-11
             xxs:hidden'>
             <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path fillRule="evenodd" clipRule="evenodd" d="M8 7C7.44772 7 7 7.44772 7 8V24C7 24.5523 7.44772 25 8 25H10C10.5523 25 11 24.5523 11 24V18.1512L23.5 24.8738C24.1667 25.2323 25 24.7842 25 24.0671V7.9329C25 7.21582 24.1667 6.76765 23.5 7.12619L11 13.8488V8C11 7.44772 10.5523 7 10 7H8Z" fill="white"/>
@@ -289,6 +303,7 @@ export const Player:React.FC<IPlayer> = () => {
                           w-96 
                           h-1 
                           mx-2 
+                          -mb-4
                           bg-gray-400 
                           overflow-hidden 
                           appearance-none 

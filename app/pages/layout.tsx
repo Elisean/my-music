@@ -6,6 +6,8 @@ import { Aside } from "../Components/Aside/Aside";
 import { Player } from "../Components/Player/Player";
 
 import React from "react";
+import { useSelector } from "react-redux";
+import { RootState } from "../Store/store";
 
 const montserrat = Montserrat({
   subsets: ["latin", "cyrillic-ext"],
@@ -17,22 +19,26 @@ function MainPageLayout({
   children: React.ReactNode;
 }) {
 
+  const musicList = useSelector((state: RootState) => state.music.musicList);
+ 
   return (
     <main className={montserrat.className}>
-        <div className="container flex flex-col min-h-screen justify-between px-2">
+        <div className="container flex flex-col min-h-screen justify-between">
           <Header />
-          <div className="flex flex-grow relative">
+          
+          <div className="flex flex-grow relative z-10">
             <Aside />
             {children}
+          </div>
 
-            <div className="overflow-x-hidden flex flex-col ml-6 xxs:hidden">
-               
-            </div>
-          
-          </div>
-          <div>
-            <Player  />
-          </div>
+      {
+        musicList.length !== 0  && (
+            <div className="relative">
+              <Player />
+            </div>          
+        )
+      }
+       
     </div>
     </main>
    
@@ -43,33 +49,3 @@ const ProtectedLayout = authProvider(MainPageLayout);
 export default ProtectedLayout;
 
 
-{/* <div>Story</div>
- <TrackList>
-  <li className='pl-4'>aaaaa aaaaa aaaaaaaaaaaaaaaaaaaaaaaaa</li>
-  <li>ssssss</li>
-  <li>uuuuuu</li>
-  <li>uuuuuu</li>
-  <li>uuuuuu</li>
-  <li>uuuuuu</li>
-  <li>uuuuuu</li>
-  <li>uuuuuu</li>
-  <li>uuuuuu</li>
-  <li>uuuuuu</li>
-  <li>uuuuuu</li>
-  <li>uuuuuu</li>
-  <li>uuuuuu</li>
-  <li>uuuuuu</li>
-  <li>uuuuuu</li>
-  <li>uuuuuu</li>
-  <li>uuuuuu</li>
-  <li>uuuuuu</li>
-  <li>uuuuuu</li>
-  <li>uuuuuu</li>
-  <li>uuuuuu</li>
-  <li>uuuuuu</li>
-  <li>uuuuuu</li>
-  <li>uuuuuu</li>
-  <li>uuuuuu</li>
-  <li>uuuuuu</li>
-  <li>uuuuuu</li>
-</TrackList>  */}

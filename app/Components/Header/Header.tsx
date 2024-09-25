@@ -97,7 +97,7 @@ export const Header:React.FC = () => {
                               <Image src="/static/shevron.svg" alt="shevron" width={14} height={7} className='ml-1' />
                       </div>
                     
-                    <div className={`flex justify-end items-end flex-col absolute h-auth rounded-xl bg-slate-800 py-2 px-6 top-14 right-11 transition-all duration-300 ease-in-out xxs:right-3  ${isOpen ? 'opacity-100 translate-y-2' : 'opacity-0 translate-y-0'} `}> 
+                    <div className={`flex justify-end items-end flex-col absolute h-auth rounded-xl bg-slate-800 py-2 px-6 top-14 right-11 transition-all duration-300 ease-in-out xxs:right-3 z-20 ${isOpen ? 'top-16 opacity-100' : 'opacity-0 -top-20'} `}> 
                       <div className=''>Личный кабинет</div>
                       <Button id='sign-out' type="button" onClick={handleSignOut}> Выйти </Button>
                     </div>

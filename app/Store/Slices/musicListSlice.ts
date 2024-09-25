@@ -6,8 +6,8 @@ import { MusicState } from '../../types';
 // Создаем асинхронный thunk для загрузки данных
 export const fetchMusicList = createAsyncThunk(
     'music/fetchMusicList',
-    async () => {
-      const listRef = ref(storage, 'JapaneseMusic');
+    async (currentPlaylist?:string) => {
+      const listRef = ref(storage, currentPlaylist);
       const res = await listAll(listRef);
       const promises = res.items.map((itemRef) => getDownloadURL(itemRef));
       const urls = await Promise.all(promises);
@@ -25,6 +25,7 @@ export const fetchMusicList = createAsyncThunk(
     duration: 0,
     volume: 1,
     activeTrackIndex: 0, // Добавляем состояние для активного трека
+    clickIsMusic:false,
   };
   
   const musicSlice = createSlice({
@@ -47,6 +48,13 @@ export const fetchMusicList = createAsyncThunk(
       setVolume: (state, action) => {
         state.volume = action.payload;
       },
+      resetMusicList: (state) => {
+        state.musicList = []; // Обнуляем musicList
+      },
+      setClickIsMusic: (state, action) =>{
+        state.clickIsMusic = action.payload
+       
+      }
     },
     extraReducers: (builder) => {
       builder
@@ -70,5 +78,7 @@ export const fetchMusicList = createAsyncThunk(
     setCurrentTime,
     setDuration,
     setVolume,
+    resetMusicList,
+    setClickIsMusic,
   } = musicSlice.actions;
   export default musicSlice.reducer;

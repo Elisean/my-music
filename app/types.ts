@@ -27,6 +27,7 @@ export interface MusicState {
     duration: number;
     volume: number;
     activeTrackIndex:number;
+    clickIsMusic:boolean
 }
 
 export interface IUserData {
