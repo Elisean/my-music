@@ -45,6 +45,7 @@ function Home() {
 
   const closedPlaylist = () =>{
     setIsOpenPlaylist(false);
+    dispatch(resetMusicList())
   }
 
 
@@ -73,13 +74,13 @@ function Home() {
         </div>
         {
         isOpenPlaylist && (
-          <div className='flex flex-col items-center w-full h-screen fixed left-0 top-0 bg-black bg-opacity-50'>
+          <div className='flex flex-col items-center w-full h-full fixed left-0 top-0 bg-black bg-opacity-50'>
           
             {musicList.length === 0 ? (
                   <p className='text-white text-sm'>Wait! Music loading</p>
                 ) : (
                   <div ref={trackListRef}>
-                  <TrackList className='pt-3 w-72 border-4 rounded-xl border-teal-100 overflow-x-hidden h-96 bg-black absolute top-0 left-50% translate-x-[-50%] translate-y-[50%]'>
+                  <TrackList className='pt-3 w-72 border-4 rounded-xl border-teal-100 overflow-x-hidden max-h-96 bg-black absolute top-0 left-50% translate-x-[-50%] translate-y-[10%]'>
 
                         <div className="absolute -top-1 -right-1 bg-teal-100 w-6 h-6 rounded-lg text-black text-xl font-bold flex items-center justify-center" onClick={closedPlaylist}>
                           x
