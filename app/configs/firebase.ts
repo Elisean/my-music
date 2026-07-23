@@ -6,7 +6,7 @@ import { getAuth } from 'firebase/auth';
 
 
 const firebaseConfig = {
-  apiKey: "AIzaSyAIN8du-i9XKTgWZN_ZepcNGrhnyxFIsEI",
+  apiKey: "ssss",
   authDomain: "my-music-d049f.firebaseapp.com",
   projectId: "my-music-d049f",
   storageBucket: "my-music-d049f.appspot.com",
